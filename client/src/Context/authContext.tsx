@@ -12,6 +12,10 @@ interface AuthContextType {
     logout: () => void;
     register: (user: StoredUser) => void;
     deleteUser: (password: string) => void;
+
+    notes: NoteInterface[]
+    addNote: (note: NoteInterface) => void,
+    deleteNote: (username: string, id:number) => void
 }
 interface User {
     username: string;
@@ -26,18 +30,39 @@ interface StoredUser{
     email: string
 }
 
+interface NoteInterface{
+    username: string,
+    title: string,
+    content: string,
+    id: number
+}
+
 export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState<User | null>(null);
+    const [notes, setNotes] = useState<NoteInterface[]>([]);
 
     useEffect(()=>{
         try{
             const userToken = localStorage.getItem('userToken');
-            getToken(userToken)
+            getToken(userToken);
         } catch {
             console.log('Invalid user token stored');
         }
+
     }, []);
+
+    function getUserNotes(username: string){
+        const unparsedAllNotes = localStorage.getItem('allNotes');
+        const allNotes = unparsedAllNotes ? JSON.parse(unparsedAllNotes) : [];
+        let userNotes: NoteInterface[] = [];
+        allNotes.map((e: NoteInterface) => {
+            if(e.username == username){
+                userNotes = [...userNotes, e]
+            }
+        })
+        setNotes(userNotes);
+    }
 
     const getToken = async (userToken: string | null) => {
         const decoded = await verifyToken(userToken);
@@ -108,6 +133,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
                 email: correctEmail,
                 password: decoded.password
             });
+            setIsLoggedIn(true);
+            getUserNotes(correctUsername);
         }else {
             alert('Unable to login');
         }
@@ -176,6 +203,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
                 localStorage.setItem('allUsers', JSON.stringify(newAllUsers));
                 createToken(temp);
                 setIsLoggedIn(true);
+                getUserNotes(user.username)
                 setUser({
                     username: user.username,
                     email: user.email
@@ -187,8 +215,48 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         }
     }
 
+    function addNote(note: NoteInterface){
+        const unparsedAllNotes = localStorage.getItem('allNotes');
+        const allNotes = unparsedAllNotes ? JSON.parse(unparsedAllNotes) : [];
+        if(note.title.length === 0){
+            alert("Give title");
+            return;
+        }
+        if(allNotes.length === 0){
+            note.id = 0
+        }else{
+            note.id = allNotes[allNotes.length - 1].id + 1;
+        }
+        const newAllNotes = [...allNotes, note];
+        localStorage.setItem('allNotes', JSON.stringify(newAllNotes));
+        console.log(notes);
+        setNotes(newAllNotes);
+        window.location.reload();
+    }
+
+    function deleteAllNotes(username: string){
+
+    }
+
+    function deleteNote(username: string, id:number){
+        const unparsedAllNotes = localStorage.getItem('allNotes');
+        const allNotes = unparsedAllNotes ? JSON.parse(unparsedAllNotes) : [];
+        let index = -1;
+        allNotes.map((e: NoteInterface, idx: number) => {
+            if(e.id === id && username === e.username){
+                index = idx;
+            }
+        });
+
+        if(index != -1){
+            const newAllNotes = allNotes.splice(index, 1);
+            localStorage.setItem('allNotes', JSON.stringify(newAllNotes));
+            window.location.reload();
+        }
+    }
+
     return (
-        <AuthContext.Provider value={{ register, login, logout, deleteUser, user, isLoggedIn}}>
+        <AuthContext.Provider value={{ notes, addNote, deleteNote, register, login, logout, deleteUser, user, isLoggedIn}}>
             {props.children}
         </AuthContext.Provider>
     )

@@ -82,9 +82,10 @@ button:focus-visible {
     transform: translatex(0);
   }
 }
-*{
+* {
   animation: transitionIn 1.5s;
 }
+
 
 *{
   box-sizing: border-box;

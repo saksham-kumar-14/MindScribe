@@ -3,6 +3,7 @@ import { useAuth } from "../../Context/authContext";
 import Button from '@mui/material/Button';
 import { useUtils } from "../../Context/utilsContext";
 import CreateBox from "./CreateBox";
+import Search from "./Search";
 
 const MainArea: React.FC = () => {
 
@@ -15,7 +16,7 @@ const MainArea: React.FC = () => {
         const now = new Date();
         const hours = now.getHours();
         if(6 <= hours && hours < 12) setGreeting("Good Morning ☀️");
-        else if(12 <= hours && hours < 6) setGreeting("Good Afternoon 🌤️");
+        else if(12 <= hours && hours < 18) setGreeting("Good Afternoon 🌤️");
         else setGreeting("Good Evening 🌙")
     }, [])
 
@@ -41,6 +42,9 @@ const MainArea: React.FC = () => {
                     >
                         Create +
             </Button>
+
+            <Search />
+
             </div>
         </div>
     )
