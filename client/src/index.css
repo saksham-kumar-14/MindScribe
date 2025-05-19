@@ -82,7 +82,7 @@ button:focus-visible {
     transform: translatex(0);
   }
 }
-* {
+*{
   animation: transitionIn 1.5s;
 }
 
@@ -90,4 +90,33 @@ button:focus-visible {
 *{
   box-sizing: border-box;
   font-family: "Afacad Flux", sans-serif;
+}
+
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.ProseMirror {
+  color: white;
+  caret-color: white;
+}
+
+h2{
+  font-size: 1.5rem;
+}
+h3{
+  font-size: 1.2rem;
+}
+
+@media print {
+  .print-content, .print-content * {
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }

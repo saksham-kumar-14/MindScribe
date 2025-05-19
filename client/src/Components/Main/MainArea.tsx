@@ -37,7 +37,9 @@ const MainArea: React.FC = () => {
                         '&:hover': {
                         backgroundColor: darkMode ? '#1f844a' : '#25a35a',
                         },
-                        fontSize: '20px'
+                        fontSize: '20px',
+                        marginX: '40px',
+                        marginY: '20px'
                     }}
                     >
                         Create +

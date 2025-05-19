@@ -15,7 +15,8 @@ interface AuthContextType {
 
     notes: NoteInterface[]
     addNote: (note: NoteInterface) => void,
-    deleteNote: (username: string, id:number) => void
+    deleteNote: (note: NoteInterface) => void
+    editNote: (note: NoteInterface) => void
 }
 interface User {
     username: string;
@@ -34,7 +35,8 @@ interface NoteInterface{
     username: string,
     title: string,
     content: string,
-    id: number
+    id: number,
+    tags: string[]
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
@@ -154,7 +156,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
             username: user?.username
         }
         const unparsedAllUsers = localStorage.getItem('allUsers');
-        const allUsers = unparsedAllUsers ? JSON.parse(unparsedAllUsers) : []; 
+        let allUsers = unparsedAllUsers ? JSON.parse(unparsedAllUsers) : []; 
         let index = -1;
         allUsers.map((e: StoredUser, idx: number) => {
             if(e.password === temp.password){
@@ -164,8 +166,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
             }
         })
         if(index !== -1){
-            const newAllUsers = allUsers.splice(index, 1);
-            localStorage.setItem('allUsers', JSON.stringify(newAllUsers));
+            allUsers.splice(index, 1);
+            localStorage.setItem('allUsers', JSON.stringify(allUsers));
             localStorage.removeItem('userToken');
             window.location.reload();
         }else{
@@ -238,25 +240,48 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
 
     }
 
-    function deleteNote(username: string, id:number){
+    function editNote(note: NoteInterface){
         const unparsedAllNotes = localStorage.getItem('allNotes');
-        const allNotes = unparsedAllNotes ? JSON.parse(unparsedAllNotes) : [];
+        let allNotes = unparsedAllNotes ? JSON.parse(unparsedAllNotes) : [];
         let index = -1;
         allNotes.map((e: NoteInterface, idx: number) => {
-            if(e.id === id && username === e.username){
+            if(e.id === note.id && note.username === e.username){
+                index = idx;
+            }
+        });
+
+        if(index !== -1){
+            console.log(index);
+            allNotes[index] = note;
+            localStorage.setItem('allNotes', JSON.stringify(allNotes));
+            window.location.reload();
+        }
+
+    }
+
+    function deleteNote(note: NoteInterface){
+        const unparsedAllNotes = localStorage.getItem('allNotes');
+        let allNotes = unparsedAllNotes ? JSON.parse(unparsedAllNotes) : [];
+        let index = -1;
+        allNotes.map((e: NoteInterface, idx: number) => {
+            if(e.id === note.id && note.username === e.username){
                 index = idx;
             }
         });
 
         if(index != -1){
-            const newAllNotes = allNotes.splice(index, 1);
-            localStorage.setItem('allNotes', JSON.stringify(newAllNotes));
-            window.location.reload();
-        }
+            allNotes.splice(index, 1);
+            localStorage.setItem('allNotes', JSON.stringify(allNotes));
+            window.location.reload()
+        }else alert('Unable to delete')
     }
 
     return (
-        <AuthContext.Provider value={{ notes, addNote, deleteNote, register, login, logout, deleteUser, user, isLoggedIn}}>
+        <AuthContext.Provider value={{ 
+            register, login, isLoggedIn, logout, deleteUser, 
+            user,
+            notes, addNote, deleteNote, editNote
+            }}>
             {props.children}
         </AuthContext.Provider>
     )

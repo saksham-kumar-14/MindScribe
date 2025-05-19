@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 // import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 // import lowlight from 'lowlight';
-import 'highlight.js/styles/github.css';
+import ImageUploader from '../ImageUploader';
 
 const MenuButton = ({ editor, command, icon, active }) => (
   <button
@@ -23,7 +23,7 @@ const MenuBar = ({ editor }) => {
 
   return (
     <div className="flex flex-wrap gap-1 mb-3 border-b pb-2 text-white">
-        <MenuButton editor={editor} command={() => editor.chain().focus().toggleBold().run()} icon="B" active={editor.isActive('bold')} />
+      <MenuButton editor={editor} command={() => editor.chain().focus().toggleBold().run()} icon="B" active={editor.isActive('bold')} />
       <MenuButton editor={editor} command={() => editor.chain().focus().toggleItalic().run()} icon="I" active={editor.isActive('italic')} />
       <MenuButton editor={editor} command={() => editor.chain().focus().toggleUnderline().run()} icon="U" active={editor.isActive('underline')} />
       <MenuButton editor={editor} command={() => editor.chain().focus().toggleStrike().run()} icon="S" active={editor.isActive('strike')} />
@@ -42,12 +42,12 @@ const MenuBar = ({ editor }) => {
   );
 };
 
-interface props{
-    content: string,
-    setContent: Function
-}
+type TiptapEditorProps = {
+  content: string;
+  setContent: Function;
+};
 
-const TipTapEditor: React.FC<props> = ({ content, setContent }) => {
+const TipTapEditor = ({ content, setContent }: TiptapEditorProps) => {
 
   const editor = useEditor({
     extensions: [
@@ -57,19 +57,44 @@ const TipTapEditor: React.FC<props> = ({ content, setContent }) => {
     ],
     content,
     onUpdate({ editor }) {
-      const html = editor.getHTML();   // Get current content as HTML
-      setContent(html);                // Save to state or handle otherwise
+      const html = editor.getHTML();
+      setContent(html);
     },
   });
 
   return (
-    <div className="w-[80vw] h-[70vh] overflow-y-scroll overflow-x-scroll min-h-[250px] px-4 py-3 rounded-md bg-transparent border border-gray-300 text-white transition-all duration-200 hover:bg-white/10">
+    <div className="w-[80vw] h-[70vh] overflow-y-scroll overflow-x-scroll min-h-[250px] px-4 py-3 rounded-md bg-transparent border border-gray-300 text-white transition-all duration-200 hover:bg-white/10 scrollbar-hide">
       <MenuBar editor={editor} />
-      <div className="min-h-[250px] px-4 py-3 bg-transparent border-black-2px rounded-md prose prose-sm max-w-none">
+      <div className=".pose-mirror min-h-[250px] px-4 py-3 bg-transparent border-black-2px rounded-md prose prose-sm prose-invert max-w-none ">
         <EditorContent editor={editor} />
       </div>
     </div>
   );
 };
 
-export default TipTapEditor;
+interface Editorprops{
+  content: string,
+  setContent: Function
+}
+
+const Editor: React.FC<Editorprops> = ({ content, setContent }) => {
+  const editorRef = useRef<any>(null);
+
+  const handleUpload = (urls: string[]) => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    urls.forEach((url) => {
+      editor.chain().focus().setImage({ src: url }).run();
+    });
+  };
+
+  return (
+    <div className="space-y-4">
+      <ImageUploader onUpload={handleUpload} />
+      <TipTapEditor content={content} setContent={setContent} />
+    </div>
+  );
+}
+
+export default Editor;

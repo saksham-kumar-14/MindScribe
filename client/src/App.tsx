@@ -7,15 +7,18 @@ import Home from './Components/Home';
 
 const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <UtilsProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path = '/' element = {<Home/>}> </Route>
-          </Routes>
-        </BrowserRouter>
-      </UtilsProvider>
-    </AuthProvider>
+    <>
+      <title>MindScribe</title>
+      <AuthProvider>
+        <UtilsProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path = '/' element = {<Home/>}> </Route>
+            </Routes>
+          </BrowserRouter>
+        </UtilsProvider>
+      </AuthProvider>
+    </>
   );
 }
 
