@@ -122,8 +122,8 @@ const CreateBox: React.FC<props> = ({ setCreateBox }) => {
                 </Button>
                 </div>
 
-                <div className="w-full max-w-3xl mb-6">
-                <TextEditor content={content} setContent={setContent} />
+                <div className="mb-6">
+                    <TextEditor content={content} setContent={setContent} />
                 </div>
 
                 <Button
@@ -134,7 +134,6 @@ const CreateBox: React.FC<props> = ({ setCreateBox }) => {
                     "&:hover": {
                     backgroundColor: darkMode ? "#1f844a" : "#25a35a",
                     },
-                    alignSelf: "flex-end",
                     px: 4,
                 }}
                 onClick={() => {

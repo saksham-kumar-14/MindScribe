@@ -127,7 +127,7 @@ const TipTapEditor: React.FC<TiptapEditorProps> = ({ content, setContent, images
   }, [images, editor]);
 
   return (
-    <div className="w-full h-[40vh] lg:w-[70vh] rounded-md border border-gray-700 bg-gray-900 text-white flex flex-col transition hover:bg-gray-800 items-center justify-center">
+    <div className="w-full h-[40vh] lg:h-[70vh] rounded-md border border-gray-700 bg-gray-900 text-white flex flex-col transition hover:bg-gray-800 items-center justify-center">
       <MenuBar editor={editor} />
       <div className="h-[250px] overflow-auto p-4 prose prose-invert w-full">
         <EditorContent editor={editor} />
