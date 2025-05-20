@@ -56,7 +56,7 @@ const MainArea: React.FC<props> = ({ openMenu }) => {
             </Button>
 
             <div className="w-full max-w-3xl">
-            <Search openMenu={openMenu} />
+            <Search />
             </div>
         </div>
         </div>

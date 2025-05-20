@@ -17,11 +17,7 @@ interface NoteInterface {
     tags: string[]
 }
 
-interface props {
-  openMenu: Boolean
-}
-
-const Search: React.FC<props> = ({ openMenu }) => {
+const Search: React.FC = () => {
     const { notes }: { notes: NoteInterface[] } = useAuth();
     const { darkMode }: { darkMode: boolean } = useUtils();
 
