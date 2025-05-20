@@ -36,8 +36,6 @@ const ResizableImage = Image.extend({
 
     return img;
   }
-
-
 });
 
 type MenuButtonProps = {
@@ -50,9 +48,14 @@ type MenuButtonProps = {
 const MenuButton: React.FC<MenuButtonProps> = ({ command, icon, active }) => (
   <button
     onClick={command}
-    className={`p-2 rounded-md font-medium text-xl
-                hover:bg-gray-200 hover:text-black transition 
-                ${active ? 'bg-blue-100 text-blue-600' : ''}`}
+    aria-pressed={active}
+    className={`
+      p-2 rounded-md font-semibold text-lg transition
+      focus:outline-none focus:ring-2 focus:ring-offset-1
+      ${active
+        ? 'bg-blue-600 text-white shadow-md'
+        : 'text-gray-300 hover:bg-gray-700 hover:text-white'}
+    `}
   >
     {icon}
   </button>
@@ -66,7 +69,7 @@ const MenuBar: React.FC<MenuBarProps> = ({ editor }) => {
   if (!editor) return null;
 
   return (
-    <div className="flex flex-wrap gap-1 mb-3 border-b pb-2 text-white">
+    <div className="flex flex-wrap gap-2 mb-4 border-b border-gray-700 pb-2">
       <MenuButton editor={editor} command={() => editor.chain().focus().toggleBold().run()} icon="B" active={editor.isActive('bold')} />
       <MenuButton editor={editor} command={() => editor.chain().focus().toggleItalic().run()} icon="I" active={editor.isActive('italic')} />
       <MenuButton editor={editor} command={() => editor.chain().focus().toggleUnderline().run()} icon="U" active={editor.isActive('underline')} />
@@ -76,9 +79,9 @@ const MenuBar: React.FC<MenuBarProps> = ({ editor }) => {
       <MenuButton editor={editor} command={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} icon="H1" active={editor.isActive('heading', { level: 1 })} />
       <MenuButton editor={editor} command={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} icon="H2" active={editor.isActive('heading', { level: 2 })} />
       <MenuButton editor={editor} command={() => editor.chain().focus().toggleCodeBlock().run()} icon="{}" active={editor.isActive('codeBlock')} />
-      <MenuButton editor={editor} command={() => editor.chain().focus().setTextAlign('left').run()} icon="↤" />
-      <MenuButton editor={editor} command={() => editor.chain().focus().setTextAlign('center').run()} icon="↔" />
-      <MenuButton editor={editor} command={() => editor.chain().focus().setTextAlign('right').run()} icon="↦" />
+      <MenuButton editor={editor} command={() => editor.chain().focus().setTextAlign('left').run()} icon="↤" active={editor.isActive({ textAlign: 'left' })} />
+      <MenuButton editor={editor} command={() => editor.chain().focus().setTextAlign('center').run()} icon="↔" active={editor.isActive({ textAlign: 'center' })} />
+      <MenuButton editor={editor} command={() => editor.chain().focus().setTextAlign('right').run()} icon="↦" active={editor.isActive({ textAlign: 'right' })} />
       <MenuButton editor={editor} command={() => editor.chain().focus().unsetAllMarks().run()} icon="⨉" />
       <MenuButton editor={editor} command={() => editor.chain().focus().undo().run()} icon="↺" />
       <MenuButton editor={editor} command={() => editor.chain().focus().redo().run()} icon="↻" />
@@ -102,15 +105,13 @@ const TipTapEditor: React.FC<TiptapEditorProps> = ({ content, setContent, images
     ],
     content,
     onUpdate({ editor }) {
-      const html = editor.getHTML();
-      setContent(html);
+      setContent(editor.getHTML());
     },
   });
 
   useEffect(() => {
     if (editor && images.length) {
-      editor
-        .chain()
+      editor.chain()
         .focus()
         .insertContent({
           type: 'image',
@@ -126,11 +127,12 @@ const TipTapEditor: React.FC<TiptapEditorProps> = ({ content, setContent, images
   }, [images, editor]);
 
   return (
-    <div className="w-[80vw] h-[70vh] overflow-y-scroll overflow-x-scroll min-h-[250px] px-4 py-3 rounded-md bg-transparent border border-gray-300 text-white transition-all duration-200 hover:bg-white/10 scrollbar-hide">
+    <div className="w-full h-[40vh] lg:w-[70vh] rounded-md border border-gray-700 bg-gray-900 text-white flex flex-col transition hover:bg-gray-800 items-center justify-center">
       <MenuBar editor={editor} />
-      <div className="min-h-[250px] px-4 py-3 bg-transparent border-black-2px rounded-md prose prose-sm prose-invert max-w-none">
+      <div className="h-[250px] overflow-auto p-4 prose prose-invert w-full">
         <EditorContent editor={editor} />
       </div>
+
     </div>
   );
 };
@@ -144,7 +146,7 @@ const EditorComponent: React.FC<EditorProps> = ({ content, setContent }) => {
   const [images, setImages] = useState<string[]>([]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <ImageUploader setImages={setImages} />
       <TipTapEditor images={images} content={content} setContent={setContent} />
     </div>

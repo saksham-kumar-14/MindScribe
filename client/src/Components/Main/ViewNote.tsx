@@ -109,10 +109,10 @@ const ViewNote: React.FC<props> = ({ selectedNote, setSelectedNote, setShowNote 
             </IconButton>
         </div>
 
-        <div className="px-4 md:px-16 pb-10">
+        <div className="px-4 md:px-16 pb-10 flex items-center justify-center">
             {
             editing ? (
-                <div className="flex flex-col items-center gap-4">
+                <div className="bg-gray-900 dark:bg-gray-800 rounded-lg w-full max-w-3xl p-6 flex flex-col justify-center items-center">
                 <Input
                     id='title'
                     placeholder='Title'
@@ -135,7 +135,7 @@ const ViewNote: React.FC<props> = ({ selectedNote, setSelectedNote, setShowNote 
                     }}
                 />
 
-                <div className="flex flex-wrap gap-2 w-full justify-center">
+                <div className="flex flex-wrap gap-2 w-full justify-center py-3">
                     {tags.map((e: string, idx: number) => (
                     <div key={idx} className="flex items-center gap-1 px-3 py-1 rounded-lg bg-red-600 hover:bg-red-500">
                         <span>{e}</span>
@@ -154,7 +154,7 @@ const ViewNote: React.FC<props> = ({ selectedNote, setSelectedNote, setShowNote 
                     ))}
                 </div>
 
-                <div className="flex flex-wrap gap-4 justify-center">
+                <div className="flex flex-wrap gap-4 justify-center py-3">
                     <Input
                     placeholder='Add Tag'
                     onChange={e => setTag(e.target.value)}
@@ -198,7 +198,7 @@ const ViewNote: React.FC<props> = ({ selectedNote, setSelectedNote, setShowNote 
 
                 <TipTapEditor content={content} setContent={setContent} />
 
-                <div className="flex flex-wrap gap-4 justify-center">
+                <div className="flex flex-wrap gap-4 justify-center py-4">
                     <Button
                     variant="contained"
                     onClick={() => {
