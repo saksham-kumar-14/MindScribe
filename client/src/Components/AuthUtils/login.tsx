@@ -73,6 +73,7 @@ const Login: React.FC<props> = ({ login }) => {
                             '&:hover:not(.Mui-disabled):before': {
                                 borderBottom: darkMode ? '2px solid white' : '2px solid black',
                             },
+                            width : isDesktop ? '40vw' : '80vw'
                         }}
                         endAdornment={
                             <InputAdornment position="end">

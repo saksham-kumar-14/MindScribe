@@ -7,6 +7,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useUtils } from "../../Context/utilsContext";
 import InputLabel from '@mui/material/InputLabel';
 import Button from '@mui/material/Button';
+import { useMediaQuery } from '@mui/material';
 
 interface props{
     register: Function
@@ -22,7 +23,7 @@ const Register: React.FC<props> = ({ register }) => {
     const [email, setEmail] = useState("");
 
     const { darkMode } = useUtils();
-
+    const isDesktop = useMediaQuery('(min-width:720px)');
     return(
         <div className='justify-center flex'>
         <div>
@@ -48,6 +49,7 @@ const Register: React.FC<props> = ({ register }) => {
                             '&:hover:not(.Mui-disabled):before': {
                                 borderBottom: darkMode ? '2px solid white' : '2px solid black',
                             },
+                            width : isDesktop ? '40vw' : '80vw'
                         }}
                     />
                 </div>
@@ -72,6 +74,7 @@ const Register: React.FC<props> = ({ register }) => {
                             '&:hover:not(.Mui-disabled):before': {
                                 borderBottom: darkMode ? '2px solid white' : '2px solid black',
                             },
+                            width : isDesktop ? '40vw' : '80vw'
                         }}
                     />
                 </div>
@@ -95,6 +98,7 @@ const Register: React.FC<props> = ({ register }) => {
                             '&:hover:not(.Mui-disabled):before': {
                                 borderBottom: darkMode ? '2px solid white' : '2px solid black',
                             },
+                            width : isDesktop ? '40vw' : '80vw'
                         }}
                         endAdornment={
                             <InputAdornment position="end">
@@ -139,6 +143,7 @@ const Register: React.FC<props> = ({ register }) => {
                             '&:hover:not(.Mui-disabled):before': {
                                 borderBottom: darkMode ? '2px solid white' : '2px solid black',
                             },
+                            width : isDesktop ? '40vw' : '80vw'
                         }}
                         endAdornment={
                             <InputAdornment position="end">

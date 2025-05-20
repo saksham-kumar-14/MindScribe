@@ -13,7 +13,7 @@ const Auth: React.FC = () => {
         <>
             {
                 isDesktop ? 
-                    <div className='grid grid-cols-2'>
+                    <div className='pt-10 grid grid-cols-2'>
                         <Login login={login} />
                         <Register register={register} />
                     </div>
