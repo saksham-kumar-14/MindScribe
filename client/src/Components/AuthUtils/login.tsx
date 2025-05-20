@@ -7,6 +7,7 @@ import { Input } from "@mui/material";
 import { useUtils } from "../../Context/utilsContext";
 import InputLabel from '@mui/material/InputLabel';
 import Button from '@mui/material/Button';
+import { useMediaQuery } from '@mui/material';
 
 interface props{
     login: Function
@@ -19,11 +20,14 @@ const Login: React.FC<props> = ({ login }) => {
     const [pwdType, setPwdType] = useState('password');
 
     const { darkMode } = useUtils();
+    const isDesktop = useMediaQuery('(min-width:720px)');
 
     return(
         <div className='justify-center flex'>
             <div>
-                <h1>Login</h1>
+                {
+                    isDesktop ? <h1 className="flex items-center justify-center">Login</h1> : <h2 className="text-3xl flex items-center justify-center">Login</h2>
+                }
                 <div className="p-4">
                     <InputLabel 
                         sx={{ color: darkMode ? 'whitesmoke' : '#242424'  }} 
@@ -45,6 +49,7 @@ const Login: React.FC<props> = ({ login }) => {
                             '&:hover:not(.Mui-disabled):before': {
                                 borderBottom: darkMode ? '2px solid white' : '2px solid black',
                             },
+                            width : isDesktop ? '40vw' : '80vw'
                         }}
                     />
                 </div>

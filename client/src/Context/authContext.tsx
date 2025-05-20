@@ -81,7 +81,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         const secretKey = import.meta.env.VITE_SECRET_KEY;
         try {
             const { payload } = await jwtVerify(token, encoder.encode(secretKey));
-            console.log('Verified Payload:', payload);
             return payload;
         } catch (err) {
             console.error('Invalid token', err);

@@ -24,7 +24,7 @@ a:hover {
 
 body {
   margin: 0;
-  padding: 8px;
+
   min-width: 320px;
   min-height: 100vh;
 }
@@ -51,25 +51,15 @@ button {
   font-family: inherit;
   cursor: pointer;
   transition: border-color 0.25s;
-}
-button.light{
-  background-color: white;
-  color: black;
-  border: solid black 1px;
-  border-radius: 1.5rem;
-}
-button.dark{
-  background-color: #1a1a1a;
-  color: white;
-  border: solid white 1px;
-  border-radius: 1.5rem;
+  outline: none;
 }
 button:hover {
   border-color: #646cff;
+  outline: none;
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: none 
 }
 
 @keyframes transitionIn{
@@ -105,13 +95,6 @@ button:focus-visible {
   caret-color: white;
 }
 
-h2{
-  font-size: 1.5rem;
-}
-h3{
-  font-size: 1.2rem;
-}
-
 @media print {
   .print-content, .print-content * {
     background: white !important;
@@ -124,4 +107,32 @@ img {
   resize: both;
   overflow: auto;
   max-width: 100%;
+}
+
+h1 {
+  font-size: 24px;
+}
+h2 {
+  font-size: 20px;
+}
+h3 {
+  font-size: 18px;
+}
+img {
+  width: 100%;
+  max-width: 300px;
+}
+
+@media (min-width: 768px) {
+  h1 { font-size: 32px; }
+  h2 { font-size: 28px; }
+  h3 { font-size: 22px; }
+  img { max-width: 500px; }
+}
+
+@media (min-width: 1024px) {
+  h1 { font-size: 48px; }
+  h2 { font-size: 36px; }
+  h3 { font-size: 28px; }
+  img { max-width: 700px; }
 }

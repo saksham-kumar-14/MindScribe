@@ -16,7 +16,7 @@ const DeleteDialogBox: React.FC<props> = ({ setShowDelete }) => {
     return(
         <div>
             <div>
-                <div className="flex justify-center items-center mt-4 pt-2">
+                <div className="flex items-center justify-center pt-6 pb-3">
                     <p >Password</p>
                     <IconButton
                         aria-label="close"
@@ -46,7 +46,7 @@ const DeleteDialogBox: React.FC<props> = ({ setShowDelete }) => {
                                 borderBottom: '2px solid white',
                             },
                             fontSize: 16,
-                            width: 120,
+                            width: '100%',
                             marginX: '2px'
                         }}
                     />
