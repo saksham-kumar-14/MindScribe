@@ -26,25 +26,21 @@ const Search: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState("");
 
     function handleSearching(query: string){
-
-        const queryWords = query.toLowerCase().split(' ');
-        if(queryWords.length === 0 || query.replace(/\s+/g, '') === "" ){
+        if(query === ""){
             setCurrentNotes(notes);
             return;
         }
 
         let ans: NoteInterface[] = []
         notes.map((e) => {
-            const words = e.title.toLowerCase().split(" ");
             let cnt = 0;
-            words.map((e: string) => {
-                if(queryWords.includes(e)) ++cnt;
-            })
+            for(let i = 0; i <= e.title.toLowerCase().length - query.length; i++){
+                if(query.toLowerCase() === e.title.toLowerCase().substring(i, i + query.length)) cnt++;
+            }
             if(cnt > 0){
-                ans = [...ans, e]
+                ans = [...ans, e];
             }
         })
-
         setCurrentNotes(ans);
     }
 

@@ -165,6 +165,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
                 }
             }
         })
+
+        let newNotes :NoteInterface[] = [];
+        notes.map((e) => {
+            if(e.username !== temp.username){
+                newNotes = [...newNotes, e];
+            }
+        })
+        setNotes(newNotes);
+        localStorage.setItem('allNotes', newNotes)
+
         if(index !== -1){
             allUsers.splice(index, 1);
             localStorage.setItem('allUsers', JSON.stringify(allUsers));
@@ -174,7 +184,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
             alert('No such user exists');
             return;
         }
-        // TODO: all functionality to delete notes associated with the user
 
 
         window.location.reload();
@@ -234,10 +243,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         console.log(notes);
         setNotes(newAllNotes);
         window.location.reload();
-    }
-
-    function deleteAllNotes(username: string){
-
     }
 
     function editNote(note: NoteInterface){

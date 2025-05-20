@@ -1,11 +1,44 @@
-import React, { useRef } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
+import React, { useRef, useState, useEffect } from 'react';
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { Image } from '@tiptap/extension-image';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 // import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 // import lowlight from 'lowlight';
 import ImageUploader from '../ImageUploader';
+import { mergeAttributes } from '@tiptap/core';
+
+export const ResizableImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      width: {
+        default: 'auto',
+        parseHTML: element => element.getAttribute('width'),
+        renderHTML: attributes => ({ width: attributes.width }),
+      },
+      href: {
+        default: null,
+        parseHTML: element => element.closest('a')?.getAttribute('href'),
+        renderHTML: attributes => ({}), // we don't apply `href` to the <img>
+      },
+    };
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    const { href, ...imgAttrs } = HTMLAttributes;
+
+    const img = ['img', mergeAttributes(imgAttrs)];
+
+    if (href) {
+      return ['a', { href, target: '_blank', rel: 'noopener noreferrer' }, img];
+    }
+
+    return img;
+  },
+});
+
 
 const MenuButton = ({ editor, command, icon, active }) => (
   <button
@@ -45,15 +78,17 @@ const MenuBar = ({ editor }) => {
 type TiptapEditorProps = {
   content: string;
   setContent: Function;
+  images: string[]
 };
 
-const TipTapEditor = ({ content, setContent }: TiptapEditorProps) => {
+const TipTapEditor = ({ content, setContent, images }: TiptapEditorProps) => {
 
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ heading: { levels: [1, 2] } }),
       Underline,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      ResizableImage,
     ],
     content,
     onUpdate({ editor }) {
@@ -61,6 +96,24 @@ const TipTapEditor = ({ content, setContent }: TiptapEditorProps) => {
       setContent(html);
     },
   });
+
+  useEffect(() => {
+    if(images.length){
+      editor
+        .chain()
+        .focus()
+        .insertContent({
+          type: 'image',
+          attrs: {
+            src: images[images.length - 1],
+            width: '300px',
+            height: 'auto',
+            href: images[images.length - 1]
+          },
+        })
+        .run();
+    }
+  }, [images]);
 
   return (
     <div className="w-[80vw] h-[70vh] overflow-y-scroll overflow-x-scroll min-h-[250px] px-4 py-3 rounded-md bg-transparent border border-gray-300 text-white transition-all duration-200 hover:bg-white/10 scrollbar-hide">
@@ -80,19 +133,12 @@ interface Editorprops{
 const Editor: React.FC<Editorprops> = ({ content, setContent }) => {
   const editorRef = useRef<any>(null);
 
-  const handleUpload = (urls: string[]) => {
-    const editor = editorRef.current;
-    if (!editor) return;
-
-    urls.forEach((url) => {
-      editor.chain().focus().setImage({ src: url }).run();
-    });
-  };
+  const [images, setImages] = useState<string[]>([]);
 
   return (
     <div className="space-y-4">
-      <ImageUploader onUpload={handleUpload} />
-      <TipTapEditor content={content} setContent={setContent} />
+      <ImageUploader images={images} setImages={setImages} />
+      <TipTapEditor images={images} content={content} setContent={setContent} />
     </div>
   );
 }

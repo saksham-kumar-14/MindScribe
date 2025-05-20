@@ -120,3 +120,8 @@ h3{
     print-color-adjust: exact;
   }
 }
+img {
+  resize: both;
+  overflow: auto;
+  max-width: 100%;
+}

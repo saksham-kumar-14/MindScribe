@@ -143,7 +143,7 @@ const ViewNote: React.FC<props> = ({ selectedNote, setSelectedNote, setShowNote 
                             }}
                         />
 
-                    <div className="items-center justify-center flex">
+                    <div className="items-center justify-center flex w-[80vw] overflow-x-scroll">
                         {tags.map((e: string, idx: number) => {
                             return(
                                 <div className="flex items-center justify-center mx-4 pl-2 py-2 rounded-lg text-white bg-red-600 hover:bg-red-500">
@@ -293,7 +293,7 @@ const ViewNote: React.FC<props> = ({ selectedNote, setSelectedNote, setShowNote 
                             </IconButton>
                         </div>
 
-                        <div className="items-center justify-center flex">
+                        <div className="items-center justify-center flex w-[80vw] overflow-x-scroll">
                             {tags.map((e: string) => {
                                 return(
                                     <div className="mx-4 px-4 py-2 rounded-lg text-white bg-red-600 hover:bg-red-500">{e}</div>
