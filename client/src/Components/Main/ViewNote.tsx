@@ -11,10 +11,10 @@ import { useAuth } from "../../Context/authContext";
 
 
 interface NoteInterface{
-    username: string,
+    username: string | undefined,
     title: string,
     content: string,
-    id: number,
+    id?: number,
     tags: string[]
 }
 

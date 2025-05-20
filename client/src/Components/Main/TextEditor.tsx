@@ -1,15 +1,14 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { useEditor, EditorContent } from "@tiptap/react";
+import React, { useState, useEffect } from 'react';
+import { useEditor, EditorContent, Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Image } from '@tiptap/extension-image';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
-// import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
-// import lowlight from 'lowlight';
-import ImageUploader from '../ImageUploader';
 import { mergeAttributes } from '@tiptap/core';
+import ImageUploader from '../ImageUploader';
+import type { DOMOutputSpec } from 'prosemirror-model';
 
-export const ResizableImage = Image.extend({
+const ResizableImage = Image.extend({
   addAttributes() {
     return {
       ...this.parent?.(),
@@ -21,26 +20,34 @@ export const ResizableImage = Image.extend({
       href: {
         default: null,
         parseHTML: element => element.closest('a')?.getAttribute('href'),
-        renderHTML: attributes => ({}), // we don't apply `href` to the <img>
+        renderHTML: () => ({}),
       },
     };
   },
 
-  renderHTML({ HTMLAttributes }) {
+  renderHTML({ HTMLAttributes }): DOMOutputSpec {
     const { href, ...imgAttrs } = HTMLAttributes;
 
-    const img = ['img', mergeAttributes(imgAttrs)];
+    const img: DOMOutputSpec = ['img', mergeAttributes(imgAttrs)];
 
     if (href) {
-      return ['a', { href, target: '_blank', rel: 'noopener noreferrer' }, img];
+      return ['a', { href, target: '_blank', rel: 'noopener noreferrer' }, img] as DOMOutputSpec;
     }
 
     return img;
-  },
+  }
+
+
 });
 
+type MenuButtonProps = {
+  editor: Editor;
+  command: () => void;
+  icon: React.ReactNode;
+  active?: boolean;
+};
 
-const MenuButton = ({ editor, command, icon, active }) => (
+const MenuButton: React.FC<MenuButtonProps> = ({ command, icon, active }) => (
   <button
     onClick={command}
     className={`p-2 rounded-md font-medium text-xl
@@ -51,7 +58,11 @@ const MenuButton = ({ editor, command, icon, active }) => (
   </button>
 );
 
-const MenuBar = ({ editor }) => {
+type MenuBarProps = {
+  editor: Editor | null;
+};
+
+const MenuBar: React.FC<MenuBarProps> = ({ editor }) => {
   if (!editor) return null;
 
   return (
@@ -77,12 +88,11 @@ const MenuBar = ({ editor }) => {
 
 type TiptapEditorProps = {
   content: string;
-  setContent: Function;
-  images: string[]
+  setContent: (content: string) => void;
+  images: string[];
 };
 
-const TipTapEditor = ({ content, setContent, images }: TiptapEditorProps) => {
-
+const TipTapEditor: React.FC<TiptapEditorProps> = ({ content, setContent, images }) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ heading: { levels: [1, 2] } }),
@@ -98,7 +108,7 @@ const TipTapEditor = ({ content, setContent, images }: TiptapEditorProps) => {
   });
 
   useEffect(() => {
-    if(images.length){
+    if (editor && images.length) {
       editor
         .chain()
         .focus()
@@ -108,39 +118,37 @@ const TipTapEditor = ({ content, setContent, images }: TiptapEditorProps) => {
             src: images[images.length - 1],
             width: '300px',
             height: 'auto',
-            href: images[images.length - 1]
+            href: images[images.length - 1],
           },
         })
         .run();
     }
-  }, [images]);
+  }, [images, editor]);
 
   return (
     <div className="w-[80vw] h-[70vh] overflow-y-scroll overflow-x-scroll min-h-[250px] px-4 py-3 rounded-md bg-transparent border border-gray-300 text-white transition-all duration-200 hover:bg-white/10 scrollbar-hide">
       <MenuBar editor={editor} />
-      <div className=".pose-mirror min-h-[250px] px-4 py-3 bg-transparent border-black-2px rounded-md prose prose-sm prose-invert max-w-none ">
+      <div className="min-h-[250px] px-4 py-3 bg-transparent border-black-2px rounded-md prose prose-sm prose-invert max-w-none">
         <EditorContent editor={editor} />
       </div>
     </div>
   );
 };
 
-interface Editorprops{
-  content: string,
-  setContent: Function
+interface EditorProps {
+  content: string;
+  setContent: (content: string) => void;
 }
 
-const Editor: React.FC<Editorprops> = ({ content, setContent }) => {
-  const editorRef = useRef<any>(null);
-
+const EditorComponent: React.FC<EditorProps> = ({ content, setContent }) => {
   const [images, setImages] = useState<string[]>([]);
 
   return (
     <div className="space-y-4">
-      <ImageUploader images={images} setImages={setImages} />
+      <ImageUploader setImages={setImages} />
       <TipTapEditor images={images} content={content} setContent={setContent} />
     </div>
   );
-}
+};
 
-export default Editor;
+export default EditorComponent;

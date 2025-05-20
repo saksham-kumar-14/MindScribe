@@ -27,15 +27,15 @@ interface AuthProviderProps {
 }
 interface StoredUser{
     username: string,
-    password: string,
+    password: string | unknown,
     email: string
 }
 
 interface NoteInterface{
-    username: string,
+    username: string | undefined,
     title: string,
     content: string,
-    id: number,
+    id?: number,
     tags: string[]
 }
 
@@ -92,7 +92,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     const createToken = async (user: StoredUser) => {
         const encoder = new TextEncoder();
         const secretKey = import.meta.env.VITE_SECRET_KEY;
-        const token = await new SignJWT(user)
+        const token = await new SignJWT(user as unknown as Partial<JWTPayload>)
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
         .setExpirationTime('720h')
@@ -173,7 +173,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
             }
         })
         setNotes(newNotes);
-        localStorage.setItem('allNotes', newNotes)
+        localStorage.setItem('allNotes', JSON.stringify(newNotes))
 
         if(index !== -1){
             allUsers.splice(index, 1);
