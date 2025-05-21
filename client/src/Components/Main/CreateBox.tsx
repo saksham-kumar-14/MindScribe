@@ -142,10 +142,10 @@ const CreateBox: React.FC<props> = ({ setCreateBox }) => {
                     return;
                     }
                     addNote({
-                    title: title.trim(),
-                    content,
-                    username: user?.username,
-                    tags,
+                        title: title.trim(),
+                        content,
+                        username: user?.username,
+                        tags,
                     });
                     setCreateBox(false);
                 }}

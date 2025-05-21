@@ -69,7 +69,7 @@ const MenuBar: React.FC<MenuBarProps> = ({ editor }) => {
   if (!editor) return null;
 
   return (
-    <div className="flex flex-wrap gap-2 mb-4 border-b border-gray-700 pb-2">
+    <div className="flex flex-wrap gap-2 mb-4 p-3 border-b border-gray-700 pb-2">
       <MenuButton editor={editor} command={() => editor.chain().focus().toggleBold().run()} icon="B" active={editor.isActive('bold')} />
       <MenuButton editor={editor} command={() => editor.chain().focus().toggleItalic().run()} icon="I" active={editor.isActive('italic')} />
       <MenuButton editor={editor} command={() => editor.chain().focus().toggleUnderline().run()} icon="U" active={editor.isActive('underline')} />
@@ -127,7 +127,7 @@ const TipTapEditor: React.FC<TiptapEditorProps> = ({ content, setContent, images
   }, [images, editor]);
 
   return (
-    <div className="w-full h-[40vh] lg:h-[70vh] rounded-md border border-gray-700 bg-gray-900 text-white flex flex-col transition hover:bg-gray-800 items-center justify-center">
+    <div className="w-full h-[40vh] lg:h-[70vh] rounded-md border border-gray-700 bg-gray-900 text-white flex flex-col transition hover:bg-gray-800 items-center">
       <MenuBar editor={editor} />
       <div className="h-[250px] overflow-auto p-4 prose prose-invert w-full">
         <EditorContent editor={editor} />

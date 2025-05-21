@@ -14,9 +14,16 @@ interface AuthContextType {
     deleteUser: (password: string) => void;
 
     notes: NoteInterface[]
+    setNotes: Function
     addNote: (note: NoteInterface) => void,
     deleteNote: (note: NoteInterface) => void
     editNote: (note: NoteInterface) => void
+
+    folders: folderInterface[]
+    setFolders: Function
+    currentNotes: NoteInterface[]
+    setCurrentNotes: Function
+    updateFolder: Function
 }
 interface User {
     username: string;
@@ -39,10 +46,19 @@ interface NoteInterface{
     tags: string[]
 }
 
+interface folderInterface{
+    title: string,
+    username: string,
+    notes: number[]
+}
+
 export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState<User | null>(null);
     const [notes, setNotes] = useState<NoteInterface[]>([]);
+    const [currentNotes, setCurrentNotes] = useState<NoteInterface[]>([]);
+
+    const [folders, setFolders] = useState<folderInterface[]>([]);
 
     useEffect(()=>{
         try{
@@ -53,6 +69,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         }
 
     }, []);
+    
+
+    function updateFolder(newFolders: folderInterface[]){
+        localStorage.setItem('allFolders', JSON.stringify(newFolders));
+    }
 
     function getUserNotes(username: string){
         const unparsedAllNotes = localStorage.getItem('allNotes');
@@ -64,6 +85,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
             }
         })
         setNotes(userNotes);
+        setCurrentNotes(userNotes);
+        const unparsedFolders = localStorage.getItem('allFolders');
+        let allFolders = unparsedFolders ? JSON.parse(unparsedFolders) : [];
+        setFolders(allFolders)
     }
 
     const getToken = async (userToken: string | null) => {
@@ -239,9 +264,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         }
         const newAllNotes = [...allNotes, note];
         localStorage.setItem('allNotes', JSON.stringify(newAllNotes));
-        console.log(notes);
         setNotes(newAllNotes);
-        window.location.reload();
+        window.location.reload()
     }
 
     function editNote(note: NoteInterface){
@@ -266,6 +290,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     function deleteNote(note: NoteInterface){
         const unparsedAllNotes = localStorage.getItem('allNotes');
         let allNotes = unparsedAllNotes ? JSON.parse(unparsedAllNotes) : [];
+        const unparsedFolders = localStorage.getItem('allFolders');
+        let allFolders = unparsedFolders ? JSON.parse(unparsedFolders) : [];
         let index = -1;
         allNotes.map((e: NoteInterface, idx: number) => {
             if(e.id === note.id && note.username === e.username){
@@ -276,6 +302,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         if(index != -1){
             allNotes.splice(index, 1);
             localStorage.setItem('allNotes', JSON.stringify(allNotes));
+
+            let newAllFolders: folderInterface[] = [];
+            allFolders.map((folder: folderInterface) => {
+                let temp = folder
+                const newFolderNotes = temp.notes.filter(item => item !== note.id);
+                temp.notes = newFolderNotes
+                newAllFolders = [...newAllFolders, temp];
+            })
+            localStorage.setItem('allFolders', JSON.stringify(newAllFolders))
+            
             window.location.reload()
         }else alert('Unable to delete')
     }
@@ -284,7 +320,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         <AuthContext.Provider value={{ 
             register, login, isLoggedIn, logout, deleteUser, 
             user,
-            notes, addNote, deleteNote, editNote
+            notes, setNotes, addNote, deleteNote, editNote,
+            folders, setFolders, currentNotes, setCurrentNotes, updateFolder
             }}>
             {props.children}
         </AuthContext.Provider>
